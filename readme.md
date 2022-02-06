@@ -9,9 +9,9 @@ proxy for bypassing VRV being unavailable in your country
 probably only works for crunch
 
 # how to use
-`py main.py` or `py main.py (SERIES_ID/VRV_URL)`
+`py vrv_player.py` or `py vrv_player.py (SERIES_ID/VRV_URL)`
 
-to launch with mpv use `--mpv` flag, ex `py main.py --mpv`
+to launch with mpv use `--mpv` flag, ex `py vrv_player.py --mpv`
 
 mpv rn only works if its in path
 
