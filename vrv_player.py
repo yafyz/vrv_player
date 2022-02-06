@@ -56,7 +56,14 @@ class PlaybackInfo:
             self.subtitles[k] = SubtitleInfo(v)
 
     def get_default_stream(self) -> StreamInfo:
-        return self.streams[""]
+        try:
+            return self.streams[list(self.streams.keys())[0]]#self.streams[""]
+        except Exception as e:
+            raise e
+    def try_get_subtitles(self, lang) -> str:
+        if lang in self.subtitles:
+            return self.subtitles[lang]
+        return None
 
 # VRV classes
 
@@ -119,7 +126,7 @@ def open_vlc(file: str, sub: str=None, title: str=None, autoexit: bool=True) -> 
         args.append(sub)
     if autoexit:
         args.append("--play-and-exit")
-    subprocess.call(args)
+    subprocess.call(args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 def get_bytes(url: str) -> bytes:
     with do_request(url) as res:
@@ -128,7 +135,7 @@ def get_bytes(url: str) -> bytes:
 def play_stream(stream_url: str, sub_url: str = None, title: str=None) -> None:
     if sub_url:
         sub = get_bytes(sub_url)
-        f = tempfile.TemporaryFile("wb", delete=False)
+        f = tempfile.NamedTemporaryFile("wb", delete=False)
         f.write(sub)
         f.close()
         try:
@@ -177,6 +184,7 @@ while True:
             if not "playback_info" in episode.__dict__:
                 episode.load_playback_info()
             pbi = episode.playback_info
-            play_stream(pbi.get_default_stream().url, pbi.subtitles[sub_lang].url, "%s - %d. %s" % (season.title, episode_index, episode.title))
-    except:
+            play_stream(pbi.get_default_stream().url, pbi.try_get_subtitles(sub_lang), "%s - %d. %s" % (season.title, episode_index, episode.title))
+    except Exception as e:
+#        raise e
         pass
