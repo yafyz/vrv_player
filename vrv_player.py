@@ -24,7 +24,7 @@ def do_request(req) -> urllib.error.HTTPError:
         print(res.read())
         raise res
 
-# Crunchyroll classes
+# Crunch classes
 
 class StreamInfo:
     url: str

@@ -84,6 +84,3 @@ def get_vrv_data_for_url(url) -> str:
 
     os.system('cls' if os.name=='nt' else 'clear')
     return VRV_Data(vrv_data["Policy"], vrv_data["Signature"], vrv_data["Key-Pair-Id"])
-
-#print(get_vrv_data_for_url("https://vrv.co/watch/GR0X7VZ9Y/"))
-
