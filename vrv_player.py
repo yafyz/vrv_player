@@ -15,6 +15,14 @@ SEASONS_URI = "https://api.vrv.co/cms/v2/US/M2/-/seasons"
 EPISODES_URI = "https://api.vrv.co/cms/v2/US/M2/-/episodes"
 VLC_PATH = "C:\\Program Files (x86)\\VideoLAN\\VLC\\" if os.name == "nt" else "" # expect that on non windows machines, vlc is gonna be in path
 
+USE_MPV = False
+for v in sys.argv:
+    if v == "--mpv":
+        USE_MPV = True
+        sys.argv.remove(v)
+        print("Using mpv")
+        break
+
 # top functions
 
 def do_request(req) -> urllib.error.HTTPError:
@@ -128,22 +136,34 @@ def open_vlc(file: str, sub: str=None, title: str=None, autoexit: bool=True) -> 
         args.append("--play-and-exit")
     subprocess.call(args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
+def open_mpv(file: str, sub: str=None, title: str=None) -> None:
+    args = ["mpv", file]
+    if title:
+        args.append("--force-media-title=%s" % title.replace("\"", "\\\""))
+    if sub:
+        args.append("--sub-file=%s" % sub.replace("\"", "\\\""))
+    subprocess.call(args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
 def get_bytes(url: str) -> bytes:
     with do_request(url) as res:
         return res.read()
 
 def play_stream(stream_url: str, sub_url: str = None, title: str=None) -> None:
-    if sub_url:
-        sub = get_bytes(sub_url)
-        f = tempfile.NamedTemporaryFile("wb", delete=False)
-        f.write(sub)
-        f.close()
-        try:
-            open_vlc(stream_url, f.name, title)
-        finally:
-            os.remove(f.name)
+    if USE_MPV:
+        open_mpv(stream_url, title=title, sub=sub_url)
     else:
-        open_vlc(stream_url, title=title)
+        f = None
+        if sub_url:
+            sub = get_bytes(sub_url)
+            f = tempfile.NamedTemporaryFile("wb", delete=False)
+            f.write(sub)
+            f.close()
+            try:
+                open_vlc(stream_url, f.name, title)
+            finally:
+                os.remove(f.name)
+        else:
+            open_vlc(stream_url, title=title)
 
 # code
 
