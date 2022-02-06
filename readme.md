@@ -2,7 +2,7 @@
 
 plays VRV content through VLC or MPV
 
-proxy for bypassing VRV being unavailable in your country
+proxy support for bypassing VRV being unavailable in your country
 
 (only used to get Policy Data, which is needed for all the requests)
 
