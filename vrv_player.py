@@ -62,7 +62,7 @@ class PlaybackInfo:
             raise e
     def try_get_subtitles(self, lang) -> str:
         if lang in self.subtitles:
-            return self.subtitles[lang]
+            return self.subtitles[lang].url
         return None
 
 # VRV classes
