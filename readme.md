@@ -1,6 +1,6 @@
 # what does it do
 
-plays VRV content through VLC
+plays VRV content through VLC or MPV
 
 proxy for bypassing VRV being unavailable in your country
 
@@ -10,6 +10,10 @@ probably only works for crunch
 
 # how to use
 `py main.py` or `py main.py (SERIES_ID/VRV_URL)`
+
+to launch with mpv use `--mpv` flag, ex `py main.py --mpv`
+
+mpv rn only works if its in path
 
 requires `urllib3`
 
